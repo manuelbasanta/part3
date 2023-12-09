@@ -7,7 +7,7 @@ GET http://localhost:3001/api/persons/6574904d668921469ea85a2b
 content-type: application/json
 
 ### DELETE single person
-DELETE http://localhost:3001/api/persons/65749e1e2d18caf26a6c19ea
+DELETE http://localhost:3001/api/persons/657490a985d2a70a94c7046e
 content-type: application/json
 
 ### Create a single person
@@ -43,3 +43,13 @@ content-type: application/json
     "name": "Ada Lovelace",
     "number": "123-3123-312"
 }
+
+### Create a single person that is already in the phonebook - Error
+PUT http://localhost:3001/api/persons/65749e3a2d18caf26a6c19ed
+content-type: application/json
+
+{ 
+    "name": "new person for MB",
+    "number": "123-3123-312"
+}
+

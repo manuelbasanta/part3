@@ -2,38 +2,43 @@ require('dotenv').config()
 const express = require('express');
 const morgan = require('morgan')
 const cors = require('cors')
-let data = require('./data.json');
+
 const app  = express();
 app.use(cors())
 app.use(express.json());
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(express.static('static'))
-const Person = require('./models/person')
+const Person = require('./models/person');
+const { errorHandler, unknownEndpoint } = require('./middlewares');
 
 app.get('/api/persons', (req, res) => {
     Person.find({})
         .then(people => res.json(people))
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     Person.findById(req.params.id)
-        .then(person => res.json(person))
-        .catch(err => res.status(404).end())
+        .then(person => {
+            if(person) return res.json(person)
+            res.status(404).end()
+        })
+        .catch(err => next(err))
 })
 
-app.get('/info', (req, res) => {
-    const numberOfPeople = data.length;
+app.get('/info', (req, res, next) => {
     const time = new Date();
-
-    res.send(`<p>Phonebook has info for ${numberOfPeople} people</p><p>${time}</p>`)
-    res.json(data);
+    Person.countDocuments({})
+        .then(data => {
+            res.send(`<p>Phonebook has info for ${data} people</p><p>${time}</p>`)
+        })
+        .catch(err => next(err))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
         .then(data => res.status(204).end())
-        .catch(err => res.status(204).end())
+        .catch(err => next(err))
 })
 
 app.post('/api/persons', (req, res) => {
@@ -47,6 +52,19 @@ app.post('/api/persons', (req, res) => {
 
     person.save().then(newPerson => res.json(newPerson))
 })
+
+app.put('/api/persons/:id', (req, res, next) => {
+    const { name, number } = req.body;
+    const person = {
+        name,
+        number,
+    }
+    Person.findByIdAndUpdate(req.params.id, person, { new: true } )
+        .then(data => res.json(data))
+        .catch(err => next(err))
+})
+
+app.use(unknownEndpoint, errorHandler)
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

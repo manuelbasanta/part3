@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const morgan = require('morgan')
 const cors = require('cors')
@@ -8,18 +9,17 @@ app.use(express.json());
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(express.static('static'))
-const getRan = () => {
-    return Math.floor(Math.random() * 10000)
-}
+const Person = require('./models/person')
 
 app.get('/api/persons', (req, res) => {
-    res.json(data);
+    Person.find({})
+        .then(people => res.json(people))
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const person = data.find(person => person.id === Number(req.params.id));
-    if(!person) res.status(404).end()
-    else res.json(person)
+    Person.findById(req.params.id)
+        .then(person => res.json(person))
+        .catch(err => res.status(404).end())
 })
 
 app.get('/info', (req, res) => {
@@ -31,28 +31,24 @@ app.get('/info', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    data = data.filter(person => person.id !== Number(req.params.id));
-    res.status(204).end()
+    Person.findByIdAndDelete(req.params.id)
+        .then(data => res.status(204).end())
+        .catch(err => res.status(204).end())
 })
 
 app.post('/api/persons', (req, res) => {
     const { name, number } = req.body;
     if(!name || !number) return res.status(400).json({  error: 'missing data' })
     
-    const duplicate = data.find(person => person.name === name);
-    if(duplicate) return res.status(400).json({ error: 'name must be unique' })
-
-    const person = {
+    const person = new Person({
         name,
         number,
-        id: getRan()
-    }
+    })
 
-    data.push(person)
-    res.json(person)
+    person.save().then(newPerson => res.json(newPerson))
 })
 
-const PORT = 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`)
 })

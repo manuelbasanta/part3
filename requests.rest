@@ -3,11 +3,11 @@ GET http://localhost:3001/api/persons
 content-type: application/json
 
 ### GET single person
-GET http://localhost:3001/api/persons/2
+GET http://localhost:3001/api/persons/6574904d668921469ea85a2b
 content-type: application/json
 
 ### DELETE single person
-DELETE http://localhost:3001/api/persons/2
+DELETE http://localhost:3001/api/persons/65749e1e2d18caf26a6c19ea
 content-type: application/json
 
 ### Create a single person
@@ -15,7 +15,7 @@ POST http://localhost:3001/api/persons/
 content-type: application/json
 
 { 
-    "name": "Manuel", 
+    "name": "mongo person", 
     "number": "1143526756"
 }
 

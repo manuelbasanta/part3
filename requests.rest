@@ -1,0 +1,45 @@
+### GET all persons
+GET http://localhost:3001/api/persons
+content-type: application/json
+
+### GET single person
+GET http://localhost:3001/api/persons/2
+content-type: application/json
+
+### DELETE single person
+DELETE http://localhost:3001/api/persons/2
+content-type: application/json
+
+### Create a single person
+POST http://localhost:3001/api/persons/
+content-type: application/json
+
+{ 
+    "name": "Manuel", 
+    "number": "1143526756"
+}
+
+### Create a single person without name - Error
+POST http://localhost:3001/api/persons/
+content-type: application/json
+
+{ 
+    "number": "1143526756"
+}
+
+### Create a single person without number - Error
+POST http://localhost:3001/api/persons/
+content-type: application/json
+
+{ 
+    "name": "test"
+}
+
+### Create a single person that is already in the phonebook - Error
+POST http://localhost:3001/api/persons/
+content-type: application/json
+
+{ 
+    "name": "Ada Lovelace",
+    "number": "123-3123-312"
+}

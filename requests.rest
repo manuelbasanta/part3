@@ -16,7 +16,7 @@ content-type: application/json
 
 { 
     "name": "mongo person", 
-    "number": "1143526756"
+    "number": "33-33333333"
 }
 
 ### Create a single person without name - Error
@@ -44,12 +44,12 @@ content-type: application/json
     "number": "123-3123-312"
 }
 
-### Create a single person that is already in the phonebook - Error
+### Modify a phonebook person
 PUT http://localhost:3001/api/persons/65749e3a2d18caf26a6c19ed
 content-type: application/json
 
 { 
     "name": "new person for MB",
-    "number": "123-3123-312"
+    "number": "3-3123312"
 }
 

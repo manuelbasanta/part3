@@ -41,16 +41,17 @@ app.delete('/api/persons/:id', (req, res, next) => {
         .catch(err => next(err))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const { name, number } = req.body;
-    if(!name || !number) return res.status(400).json({  error: 'missing data' })
     
     const person = new Person({
         name,
         number,
     })
 
-    person.save().then(newPerson => res.json(newPerson))
+    person.save()
+        .then(newPerson => res.json(newPerson))
+        .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -59,7 +60,7 @@ app.put('/api/persons/:id', (req, res, next) => {
         name,
         number,
     }
-    Person.findByIdAndUpdate(req.params.id, person, { new: true } )
+    Person.findByIdAndUpdate(req.params.id, person, { new: true, runValidators: true, context: 'query' } )
         .then(data => res.json(data))
         .catch(err => next(err))
 })
